@@ -1,0 +1,125 @@
+import { z } from "zod";
+import { DbParams } from "../registry.js";
+import type { EndpointDef } from "../registry.js";
+
+export const endpoints: EndpointDef[] = [
+  {
+    name: "db_indexes",
+    path: "/databases/{databaseName}/indexes",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams.extend({
+      name: z.string().optional().describe("Filter to a specific index name"),
+    }),
+    description: "List all indexes with their definitions, type, and state.",
+  },
+  {
+    name: "db_indexes_stats",
+    path: "/databases/{databaseName}/indexes/stats",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Index statistics: document count, entry count, errors, map/reduce time, last indexing time.",
+  },
+  {
+    name: "db_indexes_errors",
+    path: "/databases/{databaseName}/indexes/errors",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Recent indexing errors per index: document ID, error message, and timestamp.",
+  },
+  {
+    name: "db_indexes_performance",
+    path: "/databases/{databaseName}/indexes/performance",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    timeoutMs: 60_000,
+    description: "Index performance metrics: batch durations, throughput, and phase breakdown per index.",
+  },
+  {
+    name: "db_indexes_staleness",
+    path: "/databases/{databaseName}/indexes/staleness",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Staleness state for all indexes: whether they are stale, pending items, and blocking cutoffs.",
+  },
+  {
+    name: "db_indexes_progress",
+    path: "/databases/{databaseName}/indexes/progress",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Indexing progress for all indexes: processed/total document count and estimated completion.",
+  },
+  {
+    name: "db_indexes_status",
+    path: "/databases/{databaseName}/indexes/status",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Status of all indexes: running, paused, disabled, or error state.",
+  },
+  {
+    name: "db_indexes_suggest_merge",
+    path: "/databases/{databaseName}/indexes/suggest-index-merge",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Suggest index merges: identifies indexes that can be combined to reduce overhead.",
+  },
+  {
+    name: "db_indexes_total_time",
+    path: "/databases/{databaseName}/indexes/total-time",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams,
+    description: "Total CPU and wall-clock time spent indexing per index.",
+  },
+  {
+    name: "db_indexes_terms",
+    path: "/databases/{databaseName}/indexes/terms",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams.extend({
+      name: z.string().describe("Index name"),
+      field: z.string().describe("Field name to browse terms for"),
+      fromValue: z.string().optional().describe("Start browsing from this term value"),
+      pageSize: z.number().int().optional().describe("Max terms to return"),
+    }),
+    description: "Browse index terms for a specific field. Useful for inspecting index content.",
+  },
+  {
+    name: "db_indexes_debug",
+    path: "/databases/{databaseName}/indexes/debug",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams.extend({
+      name: z.string().describe("Index name"),
+    }),
+    timeoutMs: 60_000,
+    description: "Low-level debug information for a specific index.",
+  },
+  {
+    name: "db_indexes_debug_metadata",
+    path: "/databases/{databaseName}/indexes/debug/metadata",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams.extend({
+      name: z.string().describe("Index name"),
+    }),
+    description: "Index metadata: creation time, definition hash, and versioning info.",
+  },
+  {
+    name: "db_indexes_history",
+    path: "/databases/{databaseName}/indexes/history",
+    category: "indexes",
+    auth: "ValidUser",
+    params: DbParams.extend({
+      name: z.string().optional().describe("Filter to a specific index name"),
+    }),
+    description: "Index definition history: previous definitions and when they changed.",
+  },
+];

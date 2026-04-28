@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pfx
+*.pem
+*.key
+*.p12
+
+# MCP local config (use mcp-config.example.json as template)
+.mcp.json
+
+# Generated reports
+monitoring-report-*.md
+
+# Logs
+*.log
+logs/
+pino-*.log
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code local settings
+.claude/settings.local.json
