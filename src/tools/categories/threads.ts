@@ -8,6 +8,7 @@ export const endpoints: EndpointDef[] = [
     path: "/admin/debug/threads/stack-trace",
     category: "threads",
     auth: "Operator",
+    dangerous: true,
     params: ServerParams.extend({
       threadId: z.array(z.string()).optional().describe("Filter to specific thread IDs"),
       includeStackObjects: z.boolean().optional().describe("Include managed stack objects in trace"),
