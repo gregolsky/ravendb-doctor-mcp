@@ -53,7 +53,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
         "run", "-i", "--rm",
         "-v", "C:/ravendb-certs:/certs:ro",
         "-v", "C:/ravendb-mcp-output:/data/output",
-        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud:443,https://b.your-cluster.ravendb.cloud:443,https://c.your-cluster.ravendb.cloud:443",
+        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud,https://b.your-cluster.ravendb.cloud,https://c.your-cluster.ravendb.cloud",
         "-e", "RAVEN_CERT_PFX=/certs/admin.client.certificate.pfx",
         "-e", "RAVEN_CERT_PASSWORD",
         "ravendb-doctor-mcp:latest"
@@ -76,7 +76,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
       "args": [
         "run", "-i", "--rm",
         "-v", "C:/ravendb-mcp-output:/data/output",
-        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud:443,https://b.your-cluster.ravendb.cloud:443,https://c.your-cluster.ravendb.cloud:443",
+        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud,https://b.your-cluster.ravendb.cloud,https://c.your-cluster.ravendb.cloud",
         "-e", "RAVEN_CERT_PFX_BASE64",
         "-e", "RAVEN_CERT_PASSWORD",
         "ravendb-doctor-mcp:latest"
@@ -124,13 +124,13 @@ For an ad-hoc session against a cluster you don't want to permanently configure,
 
 ```bash
 ./diagnose.sh --cert /path/to/admin.client.certificate.pfx \
-              --url https://a.your-cluster.ravendb.cloud:443 \
-              --url https://b.your-cluster.ravendb.cloud:443
+              --url https://a.your-cluster.ravendb.cloud \
+              --url https://b.your-cluster.ravendb.cloud
 ```
 
 ```powershell
 .\diagnose.ps1 -Cert C:\certs\admin.client.certificate.pfx `
-               -Url 'https://a.your-cluster.ravendb.cloud:443','https://b.your-cluster.ravendb.cloud:443'
+               -Url 'https://a.your-cluster.ravendb.cloud','https://b.your-cluster.ravendb.cloud'
 ```
 
 You'll be prompted for the PFX password. The script registers a server named `ravendb-doctor-<slug>` (slug derived from the first URL) so multiple sessions against different clusters don't collide. Spilled response files land in `./ravendb-mcp-output/<slug>/`.
@@ -163,7 +163,7 @@ Loaded automatically from `/etc/ravendb-mcp/config.json`, `./ravendb-mcp.json`, 
 
 ```json
 {
-  "nodeUrls": ["https://a.example.ravendb.cloud:443"],
+  "nodeUrls": ["https://a.example.ravendb.cloud"],
   "cert": {
     "pfx": "/certs/admin.client.certificate.pfx",
     "password": "secret"

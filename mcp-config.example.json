@@ -6,7 +6,7 @@
         "run", "-i", "--rm",
         "-v", "C:/ravendb-certs:/certs:ro",
         "-v", "C:/ravendb-mcp-output:/data/output",
-        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud:443,https://b.your-cluster.ravendb.cloud:443,https://c.your-cluster.ravendb.cloud:443",
+        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud,https://b.your-cluster.ravendb.cloud,https://c.your-cluster.ravendb.cloud",
         "-e", "RAVEN_CERT_PFX=/certs/admin.client.certificate.pfx",
         "-e", "RAVEN_CERT_PASSWORD",
         "ravendb-doctor-mcp:latest"
