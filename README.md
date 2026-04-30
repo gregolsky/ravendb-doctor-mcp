@@ -1,10 +1,9 @@
-<img src="icon.jpeg" alt="RavenDB Doctor MCP" width="120" />
+<center>
+<img src="icon.jpeg" alt="RavenDB Doctor MCP" width="512" />
+</center>
 
-# RavenDB Doctor MCP
-
-> *"Deep into that darkness peering, long I stood there, wondering, fearing,*
-> *Doubting, dreaming dreams no mortal ever dared to dream before."*
-> — Edgar Allan Poe, *The Raven*
+> *"Does wisdom perhaps appear on the earth as a raven which is inspired by the smell of carrion?"*
+> — Friedrich Nietzsche
 
 An [MCP](https://modelcontextprotocol.io/) server that exposes RavenDB's debug and monitoring endpoints as tools for AI assistants. Connect Claude (or any MCP client) to your RavenDB cluster and ask it to investigate performance, health, indexing, replication, memory, and more — in plain language.
 
