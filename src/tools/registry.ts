@@ -18,6 +18,7 @@ export interface EndpointDef<P extends z.AnyZodObject = z.AnyZodObject> {
   timeoutMs?: number;
   transform?: (data: unknown) => unknown;
   dangerous?: boolean;
+  dangerReason?: string;
 }
 
 export const ServerParams = z.object({
@@ -66,9 +67,10 @@ export function buildTool(
     const cfg = getConfig();
 
     if (def.dangerous && !cfg.allowDestructiveTools) {
+      const reason = def.dangerReason ? ` Reason: ${def.dangerReason}` : "";
       writeAuditEntry({ ts: new Date().toISOString(), tool: def.name, args, durationMs: 0, ok: false, error: "blocked: allowDestructiveTools is false" });
       return {
-        content: [{ type: "text" as const, text: "Error: this tool is disabled. Set allowDestructiveTools: true in config (or RAVEN_ALLOW_DESTRUCTIVE_TOOLS=true) to enable it." }],
+        content: [{ type: "text" as const, text: `Error: this tool is disabled.${reason} Set allowDestructiveTools: true in config (or RAVEN_ALLOW_DESTRUCTIVE_TOOLS=true) to enable it.` }],
         isError: true,
       };
     }

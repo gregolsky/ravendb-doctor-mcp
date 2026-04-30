@@ -9,6 +9,7 @@ export const endpoints: EndpointDef[] = [
     category: "threads",
     auth: "Operator",
     dangerous: true,
+    dangerReason: "Suspends the .NET runtime on all threads to capture stack frames; causes a latency spike visible to clients for the duration of the capture.",
     params: ServerParams.extend({
       threadId: z.array(z.string()).optional().describe("Filter to specific thread IDs"),
       includeStackObjects: z.boolean().optional().describe("Include managed stack objects in trace"),

@@ -10,6 +10,7 @@ export const endpoints: EndpointDef[] = [
     auth: "ClusterAdmin",
     binary: true,
     dangerous: true,
+    dangerReason: "Writes a full process memory dump to disk; can consume significant disk space and briefly stall the server.",
     params: ServerParams.extend({
       type: z.enum(["Mini", "Heap", "Full", "Triage"]).describe("Dump type"),
       path: z.string().optional().describe("Server-side path where the dump will be written (optional)"),
@@ -24,6 +25,7 @@ export const endpoints: EndpointDef[] = [
     auth: "ClusterAdmin",
     binary: true,
     dangerous: true,
+    dangerReason: "Triggers a GC heap dump which pauses the managed runtime and can cause latency spikes visible to clients.",
     params: ServerParams.extend({
       timeout: z.number().int().optional().describe("Timeout in seconds for the GC dump (default 30)"),
       path: z.string().optional().describe("Server-side path for the dump (optional)"),
