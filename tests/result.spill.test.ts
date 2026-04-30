@@ -35,7 +35,7 @@ describe("spillIfLarge", () => {
 
     const smallJson = JSON.stringify({ ok: true });
     const body = await bodyFromString(smallJson);
-    const result = await spillIfLarge(body as never, "test_tool", "application/json", cfg);
+    const result = await spillIfLarge(body as never, "test_tool", cfg);
 
     expect(result.type).toBe("json");
     if (result.type === "json") {
@@ -53,7 +53,7 @@ describe("spillIfLarge", () => {
 
     const bigJson = JSON.stringify({ data: "x".repeat(200) });
     const body = await bodyFromString(bigJson);
-    const result = await spillIfLarge(body as never, "test_tool", "application/json", cfg);
+    const result = await spillIfLarge(body as never, "test_tool", cfg);
 
     expect(result.type).toBe("spill");
     if (result.type === "spill") {

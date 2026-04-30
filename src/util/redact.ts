@@ -1,3 +1,6 @@
+// Port of Cloud.RavenDB.Core/Utils/AdminDatabasesRedactor.cs (RDBCL-5034).
+// Keep SENSITIVE_KEYS and PARENT_SCOPED in sync with that file when new
+// connection string types or credential fields are added on the cloud side.
 const SENSITIVE_KEYS = new Set([
   "awsaccesskey",
   "awssecretkey",

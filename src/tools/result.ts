@@ -32,7 +32,6 @@ export interface JsonResult {
 export async function spillIfLarge(
   body: Dispatcher.ResponseData["body"],
   toolName: string,
-  _contentType: string,
   cfg: Config
 ): Promise<JsonResult | SpillResult> {
   const chunks: Buffer[] = [];

@@ -1,6 +1,4 @@
-import fs from "node:fs";
 import { Agent, request } from "undici";
-import type { Dispatcher } from "undici";
 import type { Config } from "../config.js";
 import type { EndpointDef } from "../tools/registry.js";
 import { RavenHttpError, RavenNetworkError, isTransient } from "./errors.js";
@@ -8,6 +6,7 @@ import { streamToFile, type StreamResult } from "./stream.js";
 import { spillIfLarge, spillJsonIfLarge } from "../tools/result.js";
 import { outputPath } from "../util/paths.js";
 import { getLogger } from "../util/logger.js";
+import { buildTlsOptions } from "../util/tls.js";
 import {
   sampleClusterDashboard,
   sampleThreadsInfo,
@@ -21,21 +20,6 @@ export type ToolResult =
   | { type: "file"; result: StreamResult }
   | { type: "spill"; filePath: string; bytes: number; preview: string };
 
-function buildTlsOptions(cert: Config["cert"]): Record<string, unknown> {
-  if (!cert) return {};
-  if (cert.pfx) {
-    return {
-      pfx: fs.readFileSync(cert.pfx),
-      passphrase: cert.password,
-      ...(cert.ca ? { ca: fs.readFileSync(cert.ca) } : {}),
-    };
-  }
-  return {
-    cert: cert.pem ? fs.readFileSync(cert.pem) : undefined,
-    key: cert.key ? fs.readFileSync(cert.key) : undefined,
-    ...(cert.ca ? { ca: fs.readFileSync(cert.ca) } : {}),
-  };
-}
 
 function buildQueryString(args: Record<string, unknown>, excludeKeys: string[]): string {
   const params = new URLSearchParams();
@@ -130,7 +114,7 @@ export class RavenClient {
           return spillJsonIfLarge(transformed, def.name, this.cfg);
         }
 
-        return await spillIfLarge(res.body, def.name, ct, this.cfg);
+        return await spillIfLarge(res.body, def.name, this.cfg);
       } catch (err) {
         if (err instanceof RavenHttpError && !isTransient(err)) throw err;
         lastErr = err instanceof RavenHttpError ? err : new RavenNetworkError(err, fullUrl);

@@ -20,7 +20,6 @@ const ConfigSchema = z.object({
   cert: CertSchema.optional(),
   outputDir: z.string().default("/data/output"),
   defaultTimeoutMs: z.number().int().positive().optional(),
-  maxResponseBytes: z.number().int().positive().default(2 * 1024 * 1024 * 1024),
   spillThresholdBytes: z.number().int().positive().default(256 * 1024),
   logLevel: z.enum(["trace", "debug", "info", "warn", "error"]).default("info"),
 });
@@ -36,6 +35,7 @@ function loadFromEnv(): Partial<z.input<typeof ConfigSchema>> {
   }
   if (env.RAVEN_OUTPUT_DIR) out.outputDir = env.RAVEN_OUTPUT_DIR;
   if (env.RAVEN_LOG_LEVEL) out.logLevel = env.RAVEN_LOG_LEVEL;
+  if (env.RAVEN_TIMEOUT_MS) out.defaultTimeoutMs = parseInt(env.RAVEN_TIMEOUT_MS, 10);
   if (env.RAVEN_SPILL_THRESHOLD_BYTES)
     out.spillThresholdBytes = parseInt(env.RAVEN_SPILL_THRESHOLD_BYTES, 10);
 

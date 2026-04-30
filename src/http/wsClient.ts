@@ -1,8 +1,8 @@
-import fs from "node:fs";
 import WebSocket from "ws";
 import type { Config } from "../config.js";
 import { RavenNetworkError } from "./errors.js";
 import { getLogger } from "../util/logger.js";
+import { buildTlsOptions } from "../util/tls.js";
 
 export type DashboardFrames = Record<string, unknown[]>;
 
@@ -12,21 +12,6 @@ function toWsUrl(httpUrl: string): string {
   return httpUrl.replace(/^http:/, "ws:").replace(/^https:/, "wss:");
 }
 
-function buildTlsOpts(cfg: Config): object {
-  if (!cfg.cert) return {};
-  if (cfg.cert.pfx) {
-    return {
-      pfx: fs.readFileSync(cfg.cert.pfx),
-      passphrase: cfg.cert.password,
-      ...(cfg.cert.ca ? { ca: fs.readFileSync(cfg.cert.ca) } : {}),
-    };
-  }
-  return {
-    cert: cfg.cert.pem ? fs.readFileSync(cfg.cert.pem) : undefined,
-    key: cfg.cert.key ? fs.readFileSync(cfg.cert.key) : undefined,
-    ...(cfg.cert.ca ? { ca: fs.readFileSync(cfg.cert.ca) } : {}),
-  };
-}
 
 // Opens /cluster-dashboard/watch?node={nodeTag}, subscribes to each named type,
 // collects frames for durationMs, then unwatches and closes. Returns frames
@@ -43,7 +28,7 @@ export function sampleClusterDashboard(
   const clampedMs = Math.min(durationMs, MAX_DURATION_MS);
 
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(url, { rejectUnauthorized: false, ...buildTlsOpts(cfg) });
+    const ws = new WebSocket(url, { ...buildTlsOptions(cfg.cert), rejectUnauthorized: false });
     const frames: DashboardFrames = Object.fromEntries(types.map((t) => [t, []]));
     const idByType = new Map(types.map((t, i) => [t, i + 1]));
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -106,7 +91,7 @@ export function sampleThreadsInfo(
   const clampedMs = Math.min(durationMs, MAX_DURATION_MS);
 
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(url, { rejectUnauthorized: false, ...buildTlsOpts(cfg) });
+    const ws = new WebSocket(url, { ...buildTlsOptions(cfg.cert), rejectUnauthorized: false });
     const frames: unknown[] = [];
     let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -149,7 +134,7 @@ export function sampleAdminLogs(
   const clampedMs = Math.min(durationMs, MAX_DURATION_MS);
 
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(url, { rejectUnauthorized: false, ...buildTlsOpts(cfg) });
+    const ws = new WebSocket(url, { ...buildTlsOptions(cfg.cert), rejectUnauthorized: false });
     const frames: unknown[] = [];
     let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -196,7 +181,7 @@ export function sampleTrafficWatch(
   const clampedMs = Math.min(durationMs, MAX_DURATION_MS);
 
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(url, { rejectUnauthorized: false, ...buildTlsOpts(cfg) });
+    const ws = new WebSocket(url, { ...buildTlsOptions(cfg.cert), rejectUnauthorized: false });
     const frames: unknown[] = [];
     let timer: ReturnType<typeof setTimeout> | undefined;
 

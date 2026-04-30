@@ -20,6 +20,10 @@ export class RavenNetworkError extends Error {
   }
 }
 
+// 500 Internal Server Error is intentionally excluded — RavenDB returns 500 for
+// application-level failures (bad requests, missing databases) that will not
+// resolve on a different node. Only gateway-level errors (502/503/504) and
+// network failures warrant a retry against the next node in the cluster.
 export function isTransient(err: unknown): boolean {
   if (err instanceof RavenHttpError) {
     return err.statusCode >= 502 && err.statusCode <= 504;
