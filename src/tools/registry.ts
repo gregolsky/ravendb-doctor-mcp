@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RavenClient, ToolResult } from "../http/client.js";
 import { getLogger } from "../util/logger.js";
+import { getConfig } from "../config.js";
+import { writeAuditEntry } from "../util/audit.js";
 
 export type AuthLevel = "ValidUser" | "Operator" | "DatabaseAdmin" | "ClusterAdmin";
 
@@ -15,6 +17,7 @@ export interface EndpointDef<P extends z.AnyZodObject = z.AnyZodObject> {
   description: string;
   timeoutMs?: number;
   transform?: (data: unknown) => unknown;
+  dangerous?: boolean;
 }
 
 export const ServerParams = z.object({
@@ -59,7 +62,20 @@ export function buildTool(
   const log = getLogger();
 
   server.tool(def.name, def.description, def.params.shape, async (args: Record<string, unknown>) => {
+    const start = Date.now();
+    const cfg = getConfig();
+
+    if (def.dangerous && !cfg.allowDestructiveTools) {
+      writeAuditEntry({ ts: new Date().toISOString(), tool: def.name, args, durationMs: 0, ok: false, error: "blocked: allowDestructiveTools is false" });
+      return {
+        content: [{ type: "text" as const, text: "Error: this tool is disabled. Set allowDestructiveTools: true in config (or RAVEN_ALLOW_DESTRUCTIVE_TOOLS=true) to enable it." }],
+        isError: true,
+      };
+    }
+
     log.info({ tool: def.name }, "tool called");
+    let ok = true;
+    let error: string | undefined;
     try {
       const parsed = def.params.parse(args);
       const result = await client.request(def, parsed as Record<string, unknown>);
@@ -67,12 +83,15 @@ export function buildTool(
         content: [{ type: "text" as const, text: formatResult(result) }],
       };
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      log.error({ tool: def.name, err: msg }, "tool error");
+      ok = false;
+      error = err instanceof Error ? err.message : String(err);
+      log.error({ tool: def.name, err: error }, "tool error");
       return {
-        content: [{ type: "text" as const, text: `Error: ${msg}` }],
+        content: [{ type: "text" as const, text: `Error: ${error}` }],
         isError: true,
       };
+    } finally {
+      writeAuditEntry({ ts: new Date().toISOString(), tool: def.name, args, durationMs: Date.now() - start, ok, error });
     }
   });
 }

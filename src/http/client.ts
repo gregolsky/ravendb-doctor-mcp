@@ -76,6 +76,17 @@ export class RavenClient {
     const qs = buildQueryString(args, excludeFromQs);
     const url = (base: string) => `${base}${path}${qs}`;
 
+    if (args.nodeUrl) {
+      const override = new URL(String(args.nodeUrl));
+      const allowedOrigins = new Set(this.nodes.map((n) => new URL(n).origin));
+      if (!allowedOrigins.has(override.origin)) {
+        throw new Error(
+          `nodeUrl '${override.origin}' is not in the configured node list. ` +
+          `Allowed: ${[...allowedOrigins].join(", ")}`
+        );
+      }
+    }
+
     const nodeOrder = args.nodeUrl
       ? [String(args.nodeUrl), ...this.nodes.filter((n) => n !== args.nodeUrl)]
       : this.rotated();

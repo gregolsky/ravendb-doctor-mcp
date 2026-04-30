@@ -22,6 +22,7 @@ const ConfigSchema = z.object({
   defaultTimeoutMs: z.number().int().positive().optional(),
   spillThresholdBytes: z.number().int().positive().default(256 * 1024),
   logLevel: z.enum(["trace", "debug", "info", "warn", "error"]).default("info"),
+  allowDestructiveTools: z.boolean().default(false),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;
@@ -38,6 +39,8 @@ function loadFromEnv(): Partial<z.input<typeof ConfigSchema>> {
   if (env.RAVEN_TIMEOUT_MS) out.defaultTimeoutMs = parseInt(env.RAVEN_TIMEOUT_MS, 10);
   if (env.RAVEN_SPILL_THRESHOLD_BYTES)
     out.spillThresholdBytes = parseInt(env.RAVEN_SPILL_THRESHOLD_BYTES, 10);
+  if (env.RAVEN_ALLOW_DESTRUCTIVE_TOOLS)
+    out.allowDestructiveTools = env.RAVEN_ALLOW_DESTRUCTIVE_TOOLS === "true";
 
   const cert: Record<string, string> = {};
   if (env.RAVEN_CERT_PFX) cert.pfx = env.RAVEN_CERT_PFX;

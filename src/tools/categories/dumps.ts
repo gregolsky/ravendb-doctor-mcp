@@ -9,6 +9,7 @@ export const endpoints: EndpointDef[] = [
     category: "dumps",
     auth: "ClusterAdmin",
     binary: true,
+    dangerous: true,
     params: ServerParams.extend({
       type: z.enum(["Mini", "Heap", "Full", "Triage"]).describe("Dump type"),
       path: z.string().optional().describe("Server-side path where the dump will be written (optional)"),
@@ -22,6 +23,7 @@ export const endpoints: EndpointDef[] = [
     category: "dumps",
     auth: "ClusterAdmin",
     binary: true,
+    dangerous: true,
     params: ServerParams.extend({
       timeout: z.number().int().optional().describe("Timeout in seconds for the GC dump (default 30)"),
       path: z.string().optional().describe("Server-side path for the dump (optional)"),
