@@ -13,6 +13,7 @@ export function buildTlsOptions(cert: Config["cert"]): Record<string, unknown> {
   return {
     cert: cert.pem ? fs.readFileSync(cert.pem) : undefined,
     key: cert.key ? fs.readFileSync(cert.key) : undefined,
+    passphrase: cert.password,
     ...(cert.ca ? { ca: fs.readFileSync(cert.ca) } : {}),
   };
 }
