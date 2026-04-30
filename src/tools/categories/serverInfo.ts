@@ -76,6 +76,19 @@ export const endpoints: EndpointDef[] = [
     description: "Check whether a specific database is currently loaded and active on this node.",
   },
   {
+    name: "admin_logs_download",
+    path: "/admin/logs/download",
+    category: "serverInfo",
+    auth: "Operator",
+    binary: true,
+    params: ServerParams.extend({
+      from: z.string().optional().describe("Start of log range (ISO 8601 UTC, e.g. 2026-04-28T00:00:00.000Z)"),
+      to: z.string().optional().describe("End of log range (ISO 8601 UTC, e.g. 2026-04-28T23:59:59.999Z)"),
+    }),
+    timeoutMs: 2 * 60_000,
+    description: "Download server log files as a ZIP archive. Optionally filter by date range (from/to). Saved to outputDir.",
+  },
+  {
     name: "admin_databases_idle",
     path: "/admin/debug/databases/idle",
     category: "serverInfo",
