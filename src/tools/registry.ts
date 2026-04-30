@@ -14,6 +14,7 @@ export interface EndpointDef<P extends z.AnyZodObject = z.AnyZodObject> {
   binary?: boolean;
   description: string;
   timeoutMs?: number;
+  transform?: (data: unknown) => unknown;
 }
 
 export const ServerParams = z.object({

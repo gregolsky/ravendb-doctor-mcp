@@ -5,7 +5,7 @@ import type { Config } from "../config.js";
 import type { EndpointDef } from "../tools/registry.js";
 import { RavenHttpError, RavenNetworkError, isTransient } from "./errors.js";
 import { streamToFile, type StreamResult } from "./stream.js";
-import { spillIfLarge } from "../tools/result.js";
+import { spillIfLarge, spillJsonIfLarge } from "../tools/result.js";
 import { outputPath } from "../util/paths.js";
 import { getLogger } from "../util/logger.js";
 import {
@@ -122,6 +122,12 @@ export class RavenClient {
           const result = await streamToFile(res.body, fp, ct);
           log.info({ tool: def.name, bytes: result.bytes, filePath: fp }, "binary response saved");
           return { type: "file", result };
+        }
+
+        if (def.transform) {
+          const raw = await res.body.text();
+          const transformed = def.transform(JSON.parse(raw));
+          return spillJsonIfLarge(transformed, def.name, this.cfg);
         }
 
         return await spillIfLarge(res.body, def.name, ct, this.cfg);

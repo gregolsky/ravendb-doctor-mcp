@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ServerParams, PaginationParams } from "../registry.js";
 import type { EndpointDef } from "../registry.js";
+import { redactAdminDatabasesRecord } from "../../util/redact.js";
 
 export const endpoints: EndpointDef[] = [
   {
@@ -62,6 +63,7 @@ export const endpoints: EndpointDef[] = [
       name: z.string().describe("Database name to retrieve the full database record for"),
     }),
     description: "Retrieve the full database record (topology, settings, indexes, tasks) from the cluster state machine.",
+    transform: redactAdminDatabasesRecord,
   },
   {
     name: "server_db_is_loaded",

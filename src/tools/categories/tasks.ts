@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DbParams } from "../registry.js";
 import type { EndpointDef } from "../registry.js";
+import { redactAdminDatabasesRecord } from "../../util/redact.js";
 
 export const endpoints: EndpointDef[] = [
   {
@@ -49,5 +50,6 @@ export const endpoints: EndpointDef[] = [
     auth: "DatabaseAdmin",
     params: DbParams,
     description: "Full database record as stored in the cluster: topology, tasks, settings, expiration config.",
+    transform: redactAdminDatabasesRecord,
   },
 ];
