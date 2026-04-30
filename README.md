@@ -1,6 +1,6 @@
-<center>
-<img src="icon.jpeg" alt="RavenDB Doctor MCP" width="512" />
-</center>
+<div align="center">
+  <img src="icon.jpeg" alt="RavenDB Doctor MCP" width="512" />
+</div>
 
 > *"Does wisdom perhaps appear on the earth as a raven which is inspired by the smell of carrion?"*
 > — Friedrich Nietzsche
