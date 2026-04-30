@@ -5,14 +5,19 @@ import path from "node:path";
 const CertSchema = z
   .object({
     pfx: z.string().optional(),
+    pfxBase64: z.string().optional(),
     password: z.string().optional(),
     pem: z.string().optional(),
     key: z.string().optional(),
     ca: z.string().optional(),
   })
   .refine(
-    (c) => c.pfx || (c.pem && c.key),
-    "cert must specify either pfx or both pem+key"
+    (c) => c.pfx || c.pfxBase64 || (c.pem && c.key),
+    "cert must specify either pfx, pfxBase64, or both pem+key"
+  )
+  .refine(
+    (c) => !(c.pfx && c.pfxBase64),
+    "Specify only one of pfx (file path) or pfxBase64 (base64-encoded), not both"
   );
 
 const ConfigSchema = z.object({
@@ -44,6 +49,7 @@ function loadFromEnv(): Partial<z.input<typeof ConfigSchema>> {
 
   const cert: Record<string, string> = {};
   if (env.RAVEN_CERT_PFX) cert.pfx = env.RAVEN_CERT_PFX;
+  if (env.RAVEN_CERT_PFX_BASE64) cert.pfxBase64 = env.RAVEN_CERT_PFX_BASE64;
   if (env.RAVEN_CERT_PASSWORD) cert.password = env.RAVEN_CERT_PASSWORD;
   if (env.RAVEN_CERT_PEM) cert.pem = env.RAVEN_CERT_PEM;
   if (env.RAVEN_CERT_KEY) cert.key = env.RAVEN_CERT_KEY;

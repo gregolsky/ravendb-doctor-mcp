@@ -3,9 +3,11 @@ import type { Config } from "../config.js";
 
 export function buildTlsOptions(cert: Config["cert"]): Record<string, unknown> {
   if (!cert) return {};
-  if (cert.pfx) {
+  if (cert.pfx || cert.pfxBase64) {
     return {
-      pfx: fs.readFileSync(cert.pfx),
+      pfx: cert.pfxBase64
+        ? Buffer.from(cert.pfxBase64, "base64")
+        : fs.readFileSync(cert.pfx!),
       passphrase: cert.password,
       ...(cert.ca ? { ca: fs.readFileSync(cert.ca) } : {}),
     };

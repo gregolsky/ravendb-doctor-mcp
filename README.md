@@ -42,7 +42,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
 }
 ```
 
-**Secured cluster with PFX certificate:**
+**Secured cluster with PFX certificate (file path):**
 
 ```json
 {
@@ -66,7 +66,33 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
 }
 ```
 
-> Passing the password via `env` (not inline in `args`) keeps it out of process listings.
+**Secured cluster with PFX certificate (inline base64, no volume mount needed):**
+
+```json
+{
+  "mcpServers": {
+    "ravendb-doctor": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-v", "C:/ravendb-mcp-output:/data/output",
+        "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud:443,https://b.your-cluster.ravendb.cloud:443,https://c.your-cluster.ravendb.cloud:443",
+        "-e", "RAVEN_CERT_PFX_BASE64",
+        "-e", "RAVEN_CERT_PASSWORD",
+        "ravendb-doctor-mcp:latest"
+      ],
+      "env": {
+        "RAVEN_CERT_PFX_BASE64": "<base64-encoded PFX bytes>",
+        "RAVEN_CERT_PASSWORD": "your-pfx-password-here"
+      }
+    }
+  }
+}
+```
+
+Generate the base64 value with: `base64 -w0 admin.client.certificate.pfx` (Linux/macOS) or `[Convert]::ToBase64String([IO.File]::ReadAllBytes('admin.client.certificate.pfx'))` (PowerShell).
+
+> Passing credentials via `env` (not inline in `args`) keeps them out of process listings.
 
 ### Option 2: Node directly (no Docker)
 
@@ -101,7 +127,8 @@ All options can be set via environment variables or a JSON config file.
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `RAVEN_NODE_URLS` | Yes | Comma-separated RavenDB node URLs |
-| `RAVEN_CERT_PFX` | For secured clusters | Path to PFX client certificate |
+| `RAVEN_CERT_PFX` | For secured clusters | Path to PFX client certificate file |
+| `RAVEN_CERT_PFX_BASE64` | Alternative to `RAVEN_CERT_PFX` | Base64-encoded PFX bytes (no file mount needed); mutually exclusive with `RAVEN_CERT_PFX` |
 | `RAVEN_CERT_PASSWORD` | If PFX is password-protected | PFX password |
 | `RAVEN_CERT_PEM` | Alternative to PFX | Path to PEM certificate |
 | `RAVEN_CERT_KEY` | With PEM | Path to private key file |

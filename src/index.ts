@@ -15,7 +15,7 @@ async function main(): Promise<void> {
   log.info(
     {
       nodes: cfg.nodeUrls.length,
-      certType: cfg.cert?.pfx ? "pfx" : cfg.cert?.pem ? "pem" : "none",
+      certType: cfg.cert?.pfx ? "pfx" : cfg.cert?.pfxBase64 ? "pfx-base64" : cfg.cert?.pem ? "pem" : "none",
       outputDir: cfg.outputDir,
     },
     "ravendb-doctor-mcp starting"
