@@ -118,6 +118,25 @@ npm run build
 }
 ```
 
+## One-time diagnostic session
+
+For an ad-hoc session against a cluster you don't want to permanently configure, the wrapper scripts add the MCP entry to `.mcp.json` just for the duration of one `claude` invocation, then remove it on exit. The PFX is read into a base64 env var so no cert file is mounted into Docker.
+
+```bash
+./diagnose.sh --cert /path/to/admin.client.certificate.pfx \
+              --url https://a.your-cluster.ravendb.cloud:443 \
+              --url https://b.your-cluster.ravendb.cloud:443
+```
+
+```powershell
+.\diagnose.ps1 -Cert C:\certs\admin.client.certificate.pfx `
+               -Url 'https://a.your-cluster.ravendb.cloud:443','https://b.your-cluster.ravendb.cloud:443'
+```
+
+You'll be prompted for the PFX password. The script registers a server named `ravendb-doctor-<slug>` (slug derived from the first URL) so multiple sessions against different clusters don't collide. Spilled response files land in `./ravendb-mcp-output/<slug>/`.
+
+Requires `docker`, `node`, `claude`, and a built `ravendb-doctor-mcp:latest` image.
+
 ## Configuration
 
 All options can be set via environment variables or a JSON config file.
