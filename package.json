@@ -1,5 +1,5 @@
 {
-  "name": "ravendb-support-mcp",
+  "name": "ravendb-doctor-mcp",
   "version": "1.0.0",
   "description": "MCP server exposing RavenDB debug endpoints for AI-assisted investigation",
   "type": "module",

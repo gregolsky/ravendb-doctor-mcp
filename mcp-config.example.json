@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "ravendb-debug": {
+    "ravendb-doctor": {
       "command": "docker",
       "args": [
         "run", "-i", "--rm",
@@ -9,7 +9,7 @@
         "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud:443,https://b.your-cluster.ravendb.cloud:443,https://c.your-cluster.ravendb.cloud:443",
         "-e", "RAVEN_CERT_PFX=/certs/admin.client.certificate.pfx",
         "-e", "RAVEN_CERT_PASSWORD",
-        "ravendb-support-mcp:latest"
+        "ravendb-doctor-mcp:latest"
       ],
       "env": {
         "RAVEN_CERT_PASSWORD": "your-pfx-password-here"

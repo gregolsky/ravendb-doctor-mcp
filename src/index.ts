@@ -18,13 +18,13 @@ async function main(): Promise<void> {
       certType: cfg.cert?.pfx ? "pfx" : cfg.cert?.pem ? "pem" : "none",
       outputDir: cfg.outputDir,
     },
-    "ravendb-support-mcp starting"
+    "ravendb-doctor-mcp starting"
   );
 
   const client = new RavenClient(cfg);
 
   const server = new McpServer({
-    name: "ravendb-support-mcp",
+    name: "ravendb-doctor-mcp",
     version: "1.0.0",
   });
 

@@ -1,4 +1,10 @@
-# ravendb-support-mcp
+<img src="icon.jpeg" alt="RavenDB Doctor MCP" width="120" />
+
+# RavenDB Doctor MCP
+
+> *"Deep into that darkness peering, long I stood there, wondering, fearing,*
+> *Doubting, dreaming dreams no mortal ever dared to dream before."*
+> — Edgar Allan Poe, *The Raven*
 
 An [MCP](https://modelcontextprotocol.io/) server that exposes RavenDB's debug and monitoring endpoints as tools for AI assistants. Connect Claude (or any MCP client) to your RavenDB cluster and ask it to investigate performance, health, indexing, replication, memory, and more — in plain language.
 
@@ -9,7 +15,7 @@ An [MCP](https://modelcontextprotocol.io/) server that exposes RavenDB's debug a
 Build the image once:
 
 ```bash
-docker build -t ravendb-support-mcp:latest .
+docker build -t ravendb-doctor-mcp:latest .
 ```
 
 Then add the server to your Claude MCP config. The config file location depends on the client:
@@ -24,13 +30,13 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
 ```json
 {
   "mcpServers": {
-    "ravendb-debug": {
+    "ravendb-doctor": {
       "command": "docker",
       "args": [
         "run", "-i", "--rm",
         "-v", "C:/ravendb-mcp-output:/data/output",
         "-e", "RAVEN_NODE_URLS=http://localhost:8080",
-        "ravendb-support-mcp:latest"
+        "ravendb-doctor-mcp:latest"
       ]
     }
   }
@@ -42,7 +48,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
 ```json
 {
   "mcpServers": {
-    "ravendb-debug": {
+    "ravendb-doctor": {
       "command": "docker",
       "args": [
         "run", "-i", "--rm",
@@ -51,7 +57,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
         "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud:443,https://b.your-cluster.ravendb.cloud:443,https://c.your-cluster.ravendb.cloud:443",
         "-e", "RAVEN_CERT_PFX=/certs/admin.client.certificate.pfx",
         "-e", "RAVEN_CERT_PASSWORD",
-        "ravendb-support-mcp:latest"
+        "ravendb-doctor-mcp:latest"
       ],
       "env": {
         "RAVEN_CERT_PASSWORD": "your-pfx-password-here"
@@ -73,10 +79,10 @@ npm run build
 ```json
 {
   "mcpServers": {
-    "ravendb-debug": {
+    "ravendb-doctor": {
       "command": "node",
       "args": ["dist/index.js"],
-      "cwd": "/path/to/ravendb-support-mcp",
+      "cwd": "/path/to/ravendb-doctor-mcp",
       "env": {
         "RAVEN_NODE_URLS": "http://localhost:8080",
         "RAVEN_OUTPUT_DIR": "/tmp/ravendb-mcp-output",
