@@ -11,10 +11,16 @@ An [MCP](https://modelcontextprotocol.io/) server that exposes RavenDB's debug a
 
 ### Option 1: Docker (recommended)
 
-Build the image once:
+Pull the pre-built image from GitHub Container Registry:
 
 ```bash
-docker build -t ravendb-doctor-mcp:latest .
+docker pull ghcr.io/gregolsky/ghcr.io/gregolsky/ravendb-doctor-mcp:latest
+```
+
+Or build it yourself:
+
+```bash
+docker build -t ghcr.io/gregolsky/ghcr.io/gregolsky/ravendb-doctor-mcp:latest .
 ```
 
 Then add the server to your Claude MCP config. The config file location depends on the client:
@@ -35,7 +41,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
         "run", "-i", "--rm",
         "-v", "C:/ravendb-mcp-output:/data/output",
         "-e", "RAVEN_NODE_URLS=http://localhost:8080",
-        "ravendb-doctor-mcp:latest"
+        "ghcr.io/gregolsky/ravendb-doctor-mcp:latest"
       ]
     }
   }
@@ -56,7 +62,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
         "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud,https://b.your-cluster.ravendb.cloud,https://c.your-cluster.ravendb.cloud",
         "-e", "RAVEN_CERT_PFX=/certs/admin.client.certificate.pfx",
         "-e", "RAVEN_CERT_PASSWORD",
-        "ravendb-doctor-mcp:latest"
+        "ghcr.io/gregolsky/ravendb-doctor-mcp:latest"
       ],
       "env": {
         "RAVEN_CERT_PASSWORD": "your-pfx-password-here"
@@ -79,7 +85,7 @@ Copy `mcp-config.example.json` as a starting point and fill in your values:
         "-e", "RAVEN_NODE_URLS=https://a.your-cluster.ravendb.cloud,https://b.your-cluster.ravendb.cloud,https://c.your-cluster.ravendb.cloud",
         "-e", "RAVEN_CERT_PFX_BASE64",
         "-e", "RAVEN_CERT_PASSWORD",
-        "ravendb-doctor-mcp:latest"
+        "ghcr.io/gregolsky/ravendb-doctor-mcp:latest"
       ],
       "env": {
         "RAVEN_CERT_PFX_BASE64": "<base64-encoded PFX bytes>",
@@ -135,7 +141,7 @@ For an ad-hoc session against a cluster you don't want to permanently configure,
 
 You'll be prompted for the PFX password. The script registers a server named `ravendb-doctor-<slug>` (slug derived from the first URL) so multiple sessions against different clusters don't collide. Spilled response files land in `./ravendb-mcp-output/<slug>/`.
 
-Requires `docker`, `node`, `claude`, and a built `ravendb-doctor-mcp:latest` image.
+Requires `docker`, `node`, `claude`, and a built `ghcr.io/gregolsky/ravendb-doctor-mcp:latest` image.
 
 ## Configuration
 
